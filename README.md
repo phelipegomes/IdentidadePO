@@ -13,6 +13,8 @@ Demonstrar a construção de dashboards analíticos para avaliação de competê
     ├── medidas_dax.txt          # Medidas DAX utilizadas no Power BI
     ├── rls_configuracao.txt     # Lógica de segurança Row Level Security
     ├── dataset_replicavel.xlsx  # Base de dados fictícia para replicação
+    ├── grafico_dispersao.py     # Código fonte do gráfico de dispersão
+    
 ```
 
 ## Instruções para Replicação
