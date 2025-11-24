@@ -1,0 +1,53 @@
+// medidas_dax.txt
+// Medidas utilizadas no Power BI para cálculo dos indicadores
+
+Qtd_Consistente_Destaque_Fixo = CALCULATE(COUNTROWS(Fato_Avaliacao_Fixada), FILTER(Fato_Avaliacao_Fixada, RELATED(Dim_Resposta[Valor]) IN {2,3}))
+
+Qtd_Participantes_Fixo = DISTINCTCOUNT(Fato_Avaliacao_Fixada[Id_Pessoa])
+
+Qtd_Total_Respostas_Fixo = COUNTROWS(Fato_Avaliacao_Fixada)
+
+Perc_RespostasBoas_Fixo = DIVIDE([Qtd_Consistente_Destaque_Fixo],[Qtd_Total_Respostas_Fixo],0)
+
+Score_Profissional_Auto = CALCULATE(SUMX(Fato_Avaliacao_Fixada, RELATED(Dim_Resposta[Valor])), FILTER(Fato_Avaliacao_Fixada, Dim_Tipo_Resposta[Nome] = "autoavaliacao"))
+
+Score_Profissional_Comite = CALCULATE(SUMX(Fato_Avaliacao_Fixada, RELATED(Dim_Resposta[Valor])), FILTER(Fato_Avaliacao_Fixada, Dim_Tipo_Resposta[Nome] = "comite"))
+
+Media_Empresa_Auto = CALCULATE(MAX(Media_Empresa[Valor]), FILTER(Media_Empresa, Dim_Tipo_Resposta[Nome] = "autoavaliacao"))
+
+Media_Empresa_Comite = CALCULATE(MAX(Media_Empresa[Valor]), FILTER(Media_Empresa, Dim_Tipo_Resposta[Nome] = "comite"))
+
+Media_Tribo_Auto = CALCULATE(MAX(Media_Tribo[Valor]), FILTER(Media_Tribo, Dim_Tipo_Resposta[Nome] = "autoavaliacao" && Media_Tribo[Id_Tribo] = SELECTEDVALUE(Dim_Tribo[Id_Tribo])))
+
+Media_Tribo_Comite = CALCULATE(MAX(Media_Tribo[Valor]), FILTER(Media_Tribo, Dim_Tipo_Resposta[Nome] = "comite" && Media_Tribo[Id_Tribo] = SELECTEDVALUE(Dim_Tribo[Id_Tribo])))
+
+Final_Score =
+VAR Auto = [Resposta_Auto]
+VAR Comite = [Resposta_Comite]
+RETURN
+    SWITCH(TRUE(),
+        Auto = 1 && Comite = 1, 0.30,
+        Auto = 1 && Comite = 2, 0.60,
+        Auto = 2 && Comite = 1, 0.40,
+        Auto = 2 && Comite = 2, 0.70,
+        Auto = 3 && Comite = 2, 0.70,
+        Auto = 2 && Comite = 3, 0.80,
+        Auto = 3 && Comite = 3, 1.00,
+        Auto = 1 && Comite = 3, 0.50,
+        Auto = 3 && Comite = 1, 0.30,
+        Auto = 4 && Comite = 4, 0,
+        Auto = 4 && Comite = 1, 0.30,
+        Auto = 1 && Comite = 4, 0,
+        Auto = 4 && Comite = 2, 0.50,
+        Auto = 2 && Comite = 4, 0,
+        Auto = 4 && Comite = 3, 0.70,
+        Auto = 3 && Comite = 4, 0,
+        BLANK()
+    )
+
+Classificação = SWITCH(TRUE(),
+    [Final_Score] < 0.2, "Critical Gap",
+    [Final_Score] >= 0.2 && [Final_Score] < 0.5, "Gap",
+    [Final_Score] >= 0.5 && [Final_Score] < 0.8, "Medium",
+    [Final_Score] >= 0.8, "Strong"
+)
