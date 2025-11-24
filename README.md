@@ -21,8 +21,8 @@ Permitir que qualquer pesquisador ou profissional replique:
     ├── grafico_dispersao.py     # Código Python para gráfico dispersao
     ├── grafico_termometro.py    # Código Python para gráfico termômetro
     ├── medidas_dax.txt          # Medidas DAX utilizadas no Power BI
-    ├── figura1.jpg              # Exemplo de grafico de dispersao
-    ├── figura2.jpg              # Modelagem de dados e relacionamentos
+    ├── figura1.jpeg             # Exemplo de grafico de dispersao
+    ├── figura2.jpeg             # Modelagem de dados e relacionamentos
 ```
 
 ---
