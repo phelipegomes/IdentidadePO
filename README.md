@@ -1,31 +1,126 @@
-# Pesquisa de Mestrado – Identidade PO 2.0
+# Identidade PO – Pesquisa de Mestrado (Centro Paula Souza)
 
-Este repositório contém os códigos e dados fictícios utilizados para replicar a metodologia da pesquisa de mestrado desenvolvida no Centro Paula Souza.
+Este repositório contém **códigos, medidas DAX, regras de segurança e dados fictícios** para replicar a metodologia da pesquisa de mestrado que avalia competências de Product Owners (PO) e constrói dashboards analíticos no **Microsoft Power BI**.
 
-## Objetivo
-Demonstrar a construção de dashboards analíticos para avaliação de competências do Product Owner (PO), incluindo gráficos (Radar, Termômetro), medidas DAX e configuração de segurança RLS.
+---
 
-## Estrutura do Repositório
+## **Objetivo**
+Permitir que qualquer pesquisador ou profissional replique:
+- A modelagem dimensional da base de dados.
+- As medidas DAX para cálculo de indicadores.
+- A configuração de segurança **Row Level Security (RLS)**.
+- A integração de scripts Python para gráficos customizados (Radar e Termômetro).
+
+---
+
+## **Estrutura do Repositório**
 ```
 /codigo-mestrado/
-    ├── README.md                # Documentação do projeto
+    ├── README.md                # Este tutorial completo
+    ├── dataset_replicavel.xlsx  # Base fictícia com estrutura idêntica à original
+    ├── grafico_dispersao.py     # Código Python para gráfico dispersao
     ├── grafico_termometro.py    # Código Python para gráfico termômetro
     ├── medidas_dax.txt          # Medidas DAX utilizadas no Power BI
-    ├── rls_configuracao.txt     # Lógica de segurança Row Level Security
-    ├── dataset_replicavel.xlsx  # Base de dados fictícia para replicação
-    ├── grafico_dispersao.py     # Código fonte do gráfico de dispersão
-    
+    ├── figura1.jpg              # Exemplo de grafico de dispersao
+    ├── figura2.jpg              # Modelagem de dados e relacionamentos
 ```
 
-## Instruções para Replicação
-1. Baixe o arquivo `dataset_ficticio.xlsx`.
-2. Abra o Power BI e conecte-se ao arquivo.
-3. Insira as medidas DAX do arquivo `medidas_dax.txt`.
-4. Configure a segurança RLS conforme `rls_configuracao.txt`.
-5. Execute o script Python `grafico_termometro.py` no visual Python do Power BI.
+---
 
-## Aviso de Compliance
-Os dados originais foram anonimizados e substituídos por dados fictícios. Este repositório não contém informações sensíveis ou proprietárias da empresa Corpay.
+## **Pré-requisitos**
+1. **Microsoft Power BI Desktop**
+   - Baixe em: [https://powerbi.microsoft.com/desktop](https://powerbi.microsoft.com/desktop)
+   - Instale seguindo as instruções do site oficial.
 
-## DOI
-Será registrado no [Zenodo](https://zenodo.org/) para garantir referência acadêmica.
+2. **Python (para scripts no Power BI)**
+   - Baixe em: [https://www.python.org/downloads/](https://www.python.org/downloads/)
+   - Durante a instalação, marque a opção **“Add Python to PATH”**.
+   - Instale as bibliotecas necessárias:
+     ```bash
+     pip install matplotlib numpy pandas
+     ```
+
+---
+
+## **Passo 1 – Conectar ao Dataset**
+- Abra o **Power BI Desktop**.
+- Clique em **Obter Dados > Excel**.
+- Selecione o arquivo `dataset_replicavel.xlsx`.
+- Carregue todas as tabelas (Dim_Pessoa, Dim_Habilidade, Dim_Resposta, Dim_Tribo, Dim_PO2, Fato_Avaliacao_Resumida, Fato_Avaliacao_Detalhada).
+
+---
+
+## **Passo 2 – Configurar Relacionamentos**
+No **Gerenciador de Relacionamentos**:
+- **Fato_Avaliacao_Detalhada[Id_Pessoa] → Dim_Pessoa[Id_Pessoa]**
+- **Fato_Avaliacao_Detalhada[Id_Habilidade] → Dim_Habilidade[Id_Habilidade]**
+- **Fato_Avaliacao_Detalhada[Id_Resposta] → Dim_Resposta[Id_Resposta]**
+- **Fato_Avaliacao_Detalhada[Id_Tipo_Resposta] → Dim_Tipo_Resposta[Id_Tipo_Resposta]**
+- **Dim_Pessoa[Id_Tribo] → Dim_Tribo[Id_Tribo]**
+- **Dim_PO2[Id_Tribo] → Dim_Tribo[Id_Tribo]**
+
+**Dica:** Configure a cardinalidade como **1:N** e a direção do filtro como **Ambos**.
+
+---
+
+## **Passo 3 – Criar Medidas DAX**
+Copie as medidas do arquivo `medidas_dax.txt` e insira no Power BI:
+- Vá em **Modelagem > Nova Medida**.
+- Cole cada medida (ex.: `Final_Score`, `Classificação`, `Qtd_Consistente_Destaque_Fixo`, etc.).
+
+Essas medidas calculam:
+- Percentuais de respostas positivas.
+- Médias por empresa, tribo e profissional.
+- Classificação por faixa (Critical Gap, Gap, Medium, Strong).
+
+---
+
+## **Passo 4 – Configurar Segurança (RLS)**
+- Vá em **Modelagem > Gerenciar Funções**.
+- Crie uma função chamada **RLS_PO**
+  ```DAX
+  [Email_Corpay] = USERPRINCIPALNAME() || [Email_Fleetcor] = USERPRINCIPALNAME()
+  ```
+- Crie funções adicionais para **PO²** e **Executivos**.
+- Publique no **Power BI Service** e atribua os usuários às funções na aba **Segurança**.
+
+---
+
+## **Passo 5 – Executar Código Python (Gráfico Dispersao)**
+- No Power BI, insira um **Visual Python**.
+- Copie o conteúdo do arquivo `grafico_dispersao.py`.
+- Certifique-se de que o Python está configurado em **Arquivo > Opções > Scripts Python**.
+- Execute o script para gerar o gráfico dispersao.
+
+---
+
+## **Passo 6 – Executar Código Python (Gráfico Termômetro)**
+- No Power BI, insira um **Visual Python**.
+- Copie o conteúdo do arquivo `grafico_termometro.py`.
+- Certifique-se de que o Python está configurado em **Arquivo > Opções > Scripts Python**.
+- Execute o script para gerar o gráfico termômetro.
+
+---
+
+## **Passo 7 – Publicar e Compartilhar**
+- Salve o arquivo `.pbix`.
+- Publique no **Power BI Service**.
+- Configure permissões conforme as regras RLS.
+
+---
+
+## **Mockups e Diagramas**
+
+- **Figura 1:** Exemplo do dashboard com gráficos dispersao.
+- **Figura 2:** Estrutura dimensional do modelo de dados.
+
+---
+
+```
+Franca, Phelipe Gomes Correia de. (2025). Identidade PO – Pesquisa de Mestrado. DOI: [inserir DOI]
+```
+
+---
+
+## **Aviso de Compliance**
+Todos os dados foram anonimizados. Nenhuma informação sensível da empresa Corpay foi incluída.
