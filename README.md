@@ -12,7 +12,7 @@ Demonstrar a construção de dashboards analíticos para avaliação de competê
     ├── grafico_termometro.py    # Código Python para gráfico termômetro
     ├── medidas_dax.txt          # Medidas DAX utilizadas no Power BI
     ├── rls_configuracao.txt     # Lógica de segurança Row Level Security
-    ├── dataset_ficticio.xlsx    # Base de dados fictícia para replicação
+    ├── dataset_replicavel.xlsx  # Base de dados fictícia para replicação
 ```
 
 ## Instruções para Replicação
